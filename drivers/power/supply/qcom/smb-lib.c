@@ -41,9 +41,11 @@
 	} while (0)
 
 bool USB_detect_flag = 0;
+#ifdef CONFIG_PTN36502
 extern void set_ptn36502_safe_state_mode (void);
 extern void set_ptn36502_usp_3p0_only_mode (int cc_orient_reversed);
 extern u8 is_ptn36502_safe_mode;
+#endif
 
 static bool is_secure(struct smb_charger *chg, int addr)
 {
@@ -3893,12 +3895,14 @@ static void smblib_handle_typec_removal(struct smb_charger *chg)
 	struct smb_irq_data *data;
 	struct storm_watch *wdata;
 
+#ifdef CONFIG_PTN36502
 	printk("smblib_handle_typec_removal  is_ptn36502_safe_mode=%d\n", is_ptn36502_safe_mode);
 	if(is_ptn36502_safe_mode == 0) {
 		set_ptn36502_safe_state_mode();
 		is_ptn36502_safe_mode = 1;
 		printk("smblib_handle_typec_removal 11 is_ptn36502_safe_mode=%d\n", is_ptn36502_safe_mode);
 	}
+#endif
 
 	chg->cc2_detach_wa_active = false;
 
@@ -4047,6 +4051,7 @@ unlock:
 static void smblib_handle_typec_insertion(struct smb_charger *chg)
 {
 	int rc;
+#ifdef CONFIG_PTN36502
 	union power_supply_propval val;
 
 	smblib_get_prop_typec_cc_orientation(chg, &val);
@@ -4057,6 +4062,7 @@ static void smblib_handle_typec_insertion(struct smb_charger *chg)
 		set_ptn36502_usp_3p0_only_mode(val.intval);
 		is_ptn36502_safe_mode = 0;
 	}
+#endif
 
 	vote(chg->pd_disallowed_votable_indirect, CC_DETACHED_VOTER, false, 0);
 
