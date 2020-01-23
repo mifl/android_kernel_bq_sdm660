@@ -14089,6 +14089,7 @@ static int hdd_qdf_print_init(void)
 	return 0;
 }
 
+#ifdef MODULE
 static void hdd_qdf_print_deinit(void)
 {
 	int qdf_print_idx;
@@ -14096,6 +14097,7 @@ static void hdd_qdf_print_deinit(void)
 	qdf_print_idx = qdf_get_pidx();
 	qdf_print_ctrl_cleanup(qdf_print_idx);
 }
+#endif
 
 static inline int hdd_state_query_cb(void)
 {
